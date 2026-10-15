@@ -1,0 +1,20 @@
+# Code biên dịch và thư viện
+/dist
+/node_modules
+*.tsbuildinfo
+
+# Biến môi trường — chứa API Key, KHÔNG BAO GIỜ commit
+.env
+.env.*
+!.env.example
+
+# Database SQLite (Bước 7d)
+prisma/*.db
+prisma/*.db-journal
+
+# Log, rác hệ điều hành
+*.log
+coverage/
+.DS_Store
+
+/generated/prisma
