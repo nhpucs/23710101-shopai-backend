@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import * as bcrypt from 'bcryptjs'; // Bẫy 26: bcryptjs (JS thuần) thay bcrypt (phải biên dịch C++)
+import * as bcrypt from 'bcryptjs'; // bcryptjs: viết bằng JS thuần, không cần biên dịch C++ như bcrypt
 
 const prisma = new PrismaClient();
 

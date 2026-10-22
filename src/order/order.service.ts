@@ -1,7 +1,7 @@
 import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ProductService } from '../product/product.service';
 import { CreateOrderDto } from './dto/create-order.dto';
-import type { IOrderRepository } from './order.repository'; // Bẫy 32: phải là "import type"
+import type { IOrderRepository } from './order.repository'; // interface chỉ có lúc viết code -> phải "import type" (isolatedModules + decorator metadata)
 
 @Injectable()
 export class OrderService {

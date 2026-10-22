@@ -1,0 +1,45 @@
+name: shopai-backend CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Chương 11 (Phần 11.15 mục 5): backend là repo riêng nên job nằm ở đây, không có working-directory
+  backend-test:
+    name: Backend NestJS Test (Jest + Supertest)
+    runs-on: ubuntu-latest
+    env:
+      # Chuỗi bất kỳ CHỈ dùng trong CI — secret thật nằm trong .env (không commit) / GitHub Secrets
+      JWT_SECRET: test_secret_chi_dung_trong_ci_khong_dung_that
+      JWT_EXPIRES_IN: 1d
+      # AiService bắt buộc có key lúc khởi động; test không gọi Gemini thật nên key giả là đủ
+      GEMINI_API_KEY: fake_key_chi_dung_trong_ci
+      DATABASE_URL: file:./ci.db
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # NestJS 12 (@nestjs/testing) phát hành dạng ES Module -> Jest cần Node 24.9+ để require được
+          node-version: '24'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Lint (oxlint)
+        run: npm run lint
+
+      - name: Unit Test (AuthService, OrderService, ...)
+        run: npm test
+
+      # E2E cần DB thật đã có user demo -> tạo SQLite mới từ migrations rồi seed
+      - name: Chuẩn bị database cho E2E
+        run: |
+          npx prisma migrate deploy
+          npx prisma db seed
+
+      - name: E2E Test (Supertest — login + orders)
+        run: npm run test:e2e
